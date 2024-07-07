@@ -11,6 +11,7 @@ class Course(models.Model):
     content = models.TextField(verbose_name='описание', **NULLABLE)
     owner = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='владелец',
                               **NULLABLE)
+    amount = models.PositiveIntegerField(verbose_name='стоимость курса', **NULLABLE)
 
     def __str__(self):
         return self.title
@@ -28,6 +29,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
     owner = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='владелец',
                               **NULLABLE)
+    amount = models.PositiveIntegerField(verbose_name='стоимость урока', **NULLABLE)
 
     def __str__(self):
         return self.title

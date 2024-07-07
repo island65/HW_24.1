@@ -12,6 +12,9 @@ from lms.serializers import CourseSerializer, LessonSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
+    """
+        ViewSet for Course.
+    """
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = LMSPagination
@@ -38,6 +41,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonCreateAPIView(CreateAPIView):
+    """
+    Lesson creates endpoint.
+    """
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, ~IsModerator | IsOwner]
 
@@ -48,6 +54,9 @@ class LessonCreateAPIView(CreateAPIView):
 
 
 class LessonListAPIView(ListAPIView):
+    """
+    Lesson lists endpoint.
+    """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated]
@@ -61,23 +70,35 @@ class LessonListAPIView(ListAPIView):
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
+    """
+    Lesson retrieves endpoint.
+    """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
 class LessonUpdateAPIView(UpdateAPIView):
+    """
+    Lesson updates endpoint.
+    """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
 class LessonDestroyAPIView(DestroyAPIView):
+    """
+    Lesson destroys endpoint.
+    """
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, ~IsModerator | IsOwner]
 
 
 class SubscriptionCreateAPIView(CreateAPIView):
+    """
+    Subscription creates endpoint.
+    """
     def post(self, *args, **kwargs):
         user = self.request.user
         course_id = self.request.data.get('course')
