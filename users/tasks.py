@@ -1,18 +1,19 @@
+from datetime import datetime, timedelta
+
+import pytz
 from celery import shared_task
 from celery.utils.time import timezone
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 
 from users.models import User
 
 
 @shared_task
 def check_last_login():
-    users = User.objects.all()
-    date_now = timezone.now()
+    """Blocks the user if he has not logged in for more than 30 days"""
+    users = User.objects.filter(is_active=True)
     for user in users:
-        if user.last_login < (date_now - relativedelta(months=1)):
+        if datetime.now(pytz.timezone(settings.TIME_ZONE)) - user.last_login > timedelta(days=30):
             user.is_active = False
-            user.save()
-        else:
-            user.last_login = date_now
             user.save()
