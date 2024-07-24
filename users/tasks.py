@@ -11,9 +11,10 @@ from users.models import User
 
 @shared_task
 def check_last_login():
-    """Blocks the user if he has not logged in for more than 30 days"""
-    users = User.objects.filter(is_active=True)
+    """Blocks the user if he has not logged in for more than 1 month"""
+    now = timezone.now()
+    inactive = now - relativedelta(months=1)
+    users = User.objects.filter(last_login__lte=inactive)
     for user in users:
-        if datetime.now(pytz.timezone(settings.TIME_ZONE)) - user.last_login > timedelta(days=30):
-            user.is_active = False
-            user.save()
+        user.is_active = False
+        user.save()
