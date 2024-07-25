@@ -13,8 +13,6 @@ from users.models import User
 def check_last_login():
     """Blocks the user if he has not logged in for more than 1 month"""
     now = timezone.now()
-    inactive = now - relativedelta(months=1)
-    users = User.objects.filter(last_login__lte=inactive)
-    for user in users:
-        user.is_active = False
-        user.save()
+    month_ago = now - relativedelta(months=1)
+    users = User.objects.filter(is_active=True, last_login__lte=month_ago)
+    users.update(is_active=False)

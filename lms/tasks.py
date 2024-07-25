@@ -4,7 +4,9 @@ from celery import shared_task
 from django.core.mail import send_mail
 
 from django.conf import settings
-from lms.models import Subscription
+
+from config.settings import EMAIL_HOST_USER
+from lms.models import Subscription, Course
 
 
 @shared_task
@@ -25,3 +27,17 @@ def send_email(course_id):
                       recipient_list=emails)
         except smtplib.SMTPException as e:
             raise print(f"Ошибка отправки сообщения {e}")
+
+@shared_task
+def send_email(course_id):
+    course = Course.objects.get(pk=course_id)
+
+    subscriptions = Subscription.objects.filter(course=course, status=True)
+    emails = list(subscriptions.values_list(user__email, flat=True))
+
+    send_mail(
+        subject=f'Обновление курса {course.title}',
+        message=f'По вашей подписке {course.title} вышел новый урок!',
+        from_email=EMAIL_HOST_USER,
+        recipient_list=emails
+    )
